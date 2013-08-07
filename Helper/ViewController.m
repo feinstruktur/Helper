@@ -20,7 +20,7 @@
 {
     [super viewDidLoad];
 
-    HelpOverlayView *v = [[HelpOverlayView alloc] initWithFrame:CGRectMake(40, 40, 200, 350)];
+    HelpOverlayView *v = [[HelpOverlayView alloc] initWithFrame:CGRectMake(40, 40, 200, 300)];
     UITextView *t = [UITextView new];
     t.text = @"This is a longish text description of what's happening in this box.\n\n"
     "Throwing in a line break as well to get some more text in the box. See if this helps.";
