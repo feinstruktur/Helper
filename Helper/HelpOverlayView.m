@@ -74,8 +74,8 @@
     CGFloat w = CGRectGetWidth(self.arrowFrame);
     CGFloat h = CGRectGetHeight(self.arrowFrame);
     CGPoint start = self.arrowTip;
-    CGPoint e1 = CGPointMake(start.x + w, start.y + h - baseInset);
-    CGPoint e2 = CGPointMake(start.x + w - baseInset, start.y + h);
+    CGPoint e1 = CGPointMake(start.x + w, start.y + h + baseInset);
+    CGPoint e2 = CGPointMake(start.x + w + baseInset, start.y + h);
 
     { // control point
         [[UIColor grayColor] setFill];
