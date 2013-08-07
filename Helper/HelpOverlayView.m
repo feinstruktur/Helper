@@ -132,7 +132,7 @@
 {
     UITouch *touch = [touches anyObject];
     CGPoint hit = [touch locationInView:self];
-    CGRect hitArea = [self squareAroundPoint:self.controlPoint size:20];
+    CGRect hitArea = [self squareAroundPoint:self.controlPoint size:44];
     if (CGRectContainsPoint(hitArea, hit)) {
         self.controlPointTouched = YES;
         return;
@@ -149,8 +149,10 @@
     CGFloat dy = current.y - last.y;
     if (self.controlPointTouched) {
         self.controlPoint = CGPointMake(self.controlPoint.x + dx, self.controlPoint.y + dy);
-        [self setNeedsDisplay];
+    } else {
+        self.frame = CGRectOffset(self.frame, dx, dy);
     }
+    [self setNeedsDisplay];
 }
 
 

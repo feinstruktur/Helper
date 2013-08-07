@@ -26,6 +26,7 @@
     "Throwing in a line break as well to get some more text in the box. See if this helps.";
     t.backgroundColor = [UIColor clearColor];
     t.font = [UIFont systemFontOfSize:14];
+    t.userInteractionEnabled = NO;
     v.descriptionView = t;
     [self.view addSubview:v];
 }
