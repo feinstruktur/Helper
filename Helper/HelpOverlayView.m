@@ -12,7 +12,9 @@
 @interface HelpOverlayView ()
 
 @property (nonatomic, readonly) CGPoint arrowTip;
-@property (nonatomic, readonly) CGPoint controlPoint;
+@property (nonatomic, assign) CGPoint controlPoint;
+@property (nonatomic, readonly) CGRect controlArea;
+@property (nonatomic, assign) BOOL controlPointTouched;
 
 @end
 
@@ -27,6 +29,11 @@
         self.arrowFrame = CGRectMake(0, 0,
                                      0.3*CGRectGetWidth(self.frame),
                                      0.3*CGRectGetHeight(self.frame));
+        { // set control point
+            const CGFloat cpInset = 20;
+            CGFloat w = CGRectGetWidth(self.arrowFrame);
+            self.controlPoint = CGPointMake(self.arrowTip.x + w - cpInset, self.arrowTip.y + cpInset);
+        }
     }
     return self;
 }
@@ -52,11 +59,12 @@
 }
 
 
-- (CGPoint)controlPoint
+- (CGRect)controlArea
 {
-    const CGFloat cpInset = 20;
-    CGFloat w = CGRectGetWidth(self.arrowFrame);
-    return CGPointMake(self.arrowTip.x + w - cpInset, self.arrowTip.y + cpInset);
+    const CGFloat cpRadius = 4;
+    CGRect frame = CGRectMake(self.controlPoint.x, self.controlPoint.y, 2*cpRadius, 2*cpRadius);
+    frame = CGRectOffset(frame, -cpRadius, -cpRadius);
+    return frame;
 }
 
 
@@ -71,11 +79,7 @@
 
     { // control point
         [[UIColor grayColor] setFill];
-        const CGFloat cpRadius = 4;
-        CGRect frame = CGRectMake(self.controlPoint.x, self.controlPoint.y, 2*cpRadius, 2*cpRadius);
-        frame = CGRectOffset(frame, -cpRadius, -cpRadius);
-        UIBezierPath *p = [UIBezierPath bezierPathWithOvalInRect:frame];
-
+        UIBezierPath *p = [UIBezierPath bezierPathWithOvalInRect:self.controlArea];
         [p fill];
     }
     { // arrow line
@@ -100,6 +104,45 @@
         [p addLineToPoint:a2];
         [p fill];
     }
+}
+
+
+#pragma mark - Touch handling
+
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    for (UITouch *t in touches) {
+        CGPoint hit = [t locationInView:self];
+        if (CGRectContainsPoint(self.controlArea, hit)) {
+            self.controlPointTouched = YES;
+            return;
+        }
+    }
+}
+
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    CGPoint last = [touch previousLocationInView:self];
+    CGPoint current = [touch locationInView:self];
+    CGFloat dx = current.x - last.x;
+    CGFloat dy = current.y - last.y;
+    self.controlPoint = CGPointMake(self.controlPoint.x + dx, self.controlPoint.y + dy);
+    [self setNeedsDisplay];
+}
+
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    self.controlPointTouched = NO;
+}
+
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    self.controlPointTouched = NO;
 }
 
 
