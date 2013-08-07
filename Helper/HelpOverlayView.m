@@ -68,14 +68,20 @@
 }
 
 
+- (CGPoint)pointAtRadius:(CGFloat)r angle:(CGFloat)phi
+{
+    return CGPointMake(r * cos(phi), r * sin(phi));
+}
+
+
 - (void)drawRect:(CGRect)rect
 {
     const CGFloat baseInset = 8;
-    CGFloat w = CGRectGetWidth(self.arrowFrame);
-    CGFloat h = CGRectGetHeight(self.arrowFrame);
-    CGPoint start = self.arrowTip;
-    CGPoint e1 = CGPointMake(start.x + w, start.y + h + baseInset);
-    CGPoint e2 = CGPointMake(start.x + w + baseInset, start.y + h);
+    const CGFloat hatLength = 20;
+
+    CGFloat alpha = atan(self.controlPoint.y/self.controlPoint.x);
+
+    CGPoint tip = self.arrowTip;
 
     { // control point
         [[UIColor grayColor] setFill];
@@ -84,22 +90,31 @@
     }
     { // arrow line
         [[UIColor blackColor] setFill];
+        const CGFloat theta = 5/180.*M_PI; // opening angle
+        CGFloat w = CGRectGetWidth(self.arrowFrame);
+        CGFloat h = CGRectGetHeight(self.arrowFrame);
+
+        CGPoint s1 = [self pointAtRadius:0.95*hatLength angle:(alpha - theta)];
+        CGPoint s2 = [self pointAtRadius:0.95*hatLength angle:(alpha + theta)];
+        CGPoint e1 = CGPointMake(tip.x + w + baseInset, tip.y + h);
+        CGPoint e2 = CGPointMake(tip.x + w, tip.y + h + baseInset);
+
         UIBezierPath *p = [UIBezierPath new];
-        [p moveToPoint:start];
+        [p moveToPoint:s1];
         [p addQuadCurveToPoint:e1 controlPoint:self.controlPoint];
         [p addLineToPoint:e2];
-        [p addQuadCurveToPoint:start controlPoint:self.controlPoint];
+        [p addQuadCurveToPoint:s2 controlPoint:self.controlPoint];
         [p fill];
     }
     { // arrow tip
         [[UIColor blackColor] setFill];
-        const CGFloat l = 20; // "hat" length
         const CGFloat theta = 20/180.*M_PI; // opening angle
-        CGFloat alpha = atan(self.controlPoint.y/self.controlPoint.x);
-        CGPoint a1 = CGPointMake(l * cos(alpha - theta), l * sin(alpha - theta));
-        CGPoint a2 = CGPointMake(l * cos(alpha + theta), l * sin(alpha + theta));
+        
+        CGPoint a1 = [self pointAtRadius:hatLength angle:(alpha - theta)];
+        CGPoint a2 = [self pointAtRadius:hatLength angle:(alpha + theta)];
+
         UIBezierPath *p = [UIBezierPath new];
-        [p moveToPoint:start];
+        [p moveToPoint:tip];
         [p addLineToPoint:a1];
         [p addLineToPoint:a2];
         [p fill];
