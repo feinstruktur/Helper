@@ -95,7 +95,7 @@
         [[UIColor blackColor] setFill];
         const CGFloat l = 20; // "hat" length
         const CGFloat theta = 20/180.*M_PI; // opening angle
-        CGFloat alpha = tan(self.controlPoint.y/self.controlPoint.x); // TODO handle /0
+        CGFloat alpha = atan(self.controlPoint.y/self.controlPoint.x);
         CGPoint a1 = CGPointMake(l * cos(alpha - theta), l * sin(alpha - theta));
         CGPoint a2 = CGPointMake(l * cos(alpha + theta), l * sin(alpha + theta));
         UIBezierPath *p = [UIBezierPath new];
