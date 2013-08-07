@@ -11,9 +11,7 @@
 
 @interface HelpOverlayView ()
 
-@property (nonatomic, readonly) CGPoint arrowTip;
 @property (nonatomic, assign) CGPoint controlPoint;
-@property (nonatomic, readonly) CGRect controlArea;
 @property (nonatomic, assign) BOOL controlPointTouched;
 
 @end
@@ -61,9 +59,14 @@
 
 - (CGRect)controlArea
 {
-    const CGFloat cpRadius = 4;
-    CGRect frame = CGRectMake(self.controlPoint.x, self.controlPoint.y, 2*cpRadius, 2*cpRadius);
-    frame = CGRectOffset(frame, -cpRadius, -cpRadius);
+    return [self squareAroundPoint:self.controlPoint size:8];
+}
+
+
+- (CGRect)squareAroundPoint:(CGPoint)point size:(CGFloat)size
+{
+    CGRect frame = CGRectMake(point.x, point.y, size, size);
+    frame = CGRectOffset(frame, -size/2, -size/2);
     return frame;
 }
 
@@ -127,12 +130,12 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    for (UITouch *t in touches) {
-        CGPoint hit = [t locationInView:self];
-        if (CGRectContainsPoint(self.controlArea, hit)) {
-            self.controlPointTouched = YES;
-            return;
-        }
+    UITouch *touch = [touches anyObject];
+    CGPoint hit = [touch locationInView:self];
+    CGRect hitArea = [self squareAroundPoint:self.controlPoint size:20];
+    if (CGRectContainsPoint(hitArea, hit)) {
+        self.controlPointTouched = YES;
+        return;
     }
 }
 
@@ -144,8 +147,10 @@
     CGPoint current = [touch locationInView:self];
     CGFloat dx = current.x - last.x;
     CGFloat dy = current.y - last.y;
-    self.controlPoint = CGPointMake(self.controlPoint.x + dx, self.controlPoint.y + dy);
-    [self setNeedsDisplay];
+    if (self.controlPointTouched) {
+        self.controlPoint = CGPointMake(self.controlPoint.x + dx, self.controlPoint.y + dy);
+        [self setNeedsDisplay];
+    }
 }
 
 
