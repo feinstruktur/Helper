@@ -37,13 +37,19 @@
 }
 
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    // Drawing code
+    UIBezierPath *path = [UIBezierPath new];
+    CGPoint start = self.arrowFrame.origin;
+    CGFloat w = CGRectGetWidth(self.arrowFrame);
+    CGFloat h = CGRectGetHeight(self.arrowFrame);
+    CGPoint end = CGPointMake(start.x + w, start.y + h);
+    CGPoint control = CGPointMake(start.x + w, start.y);
+    [path moveToPoint:start];
+    [path addQuadCurveToPoint:end controlPoint:control];
+    path.lineWidth = 4;
+    [path stroke];
 }
-*/
+
 
 @end
