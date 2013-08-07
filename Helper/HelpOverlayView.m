@@ -8,6 +8,15 @@
 
 #import "HelpOverlayView.h"
 
+
+@interface HelpOverlayView ()
+
+@property (nonatomic, readonly) CGPoint arrowTip;
+@property (nonatomic, readonly) CGPoint controlPoint;
+
+@end
+
+
 @implementation HelpOverlayView
 
 - (id)initWithFrame:(CGRect)frame
@@ -37,30 +46,55 @@
 }
 
 
+- (CGPoint)arrowTip
+{
+    return self.arrowFrame.origin;
+}
+
+
+- (CGPoint)controlPoint
+{
+    const CGFloat cpInset = 20;
+    CGFloat w = CGRectGetWidth(self.arrowFrame);
+    return CGPointMake(self.arrowTip.x + w - cpInset, self.arrowTip.y + cpInset);
+}
+
+
 - (void)drawRect:(CGRect)rect
 {
-    CGPoint start = self.arrowFrame.origin;
+    const CGFloat baseInset = 8;
     CGFloat w = CGRectGetWidth(self.arrowFrame);
     CGFloat h = CGRectGetHeight(self.arrowFrame);
-    CGPoint end = CGPointMake(start.x + w, start.y + h);
-    CGFloat inset = 20;
-    CGPoint cp = CGPointMake(start.x + w - inset, start.y + inset);
+    CGPoint start = self.arrowTip;
+    CGPoint e1 = CGPointMake(start.x + w, start.y + h - baseInset);
+    CGPoint e2 = CGPointMake(start.x + w - baseInset, start.y + h);
 
+    { // control point
+        [[UIColor grayColor] setFill];
+        const CGFloat cpRadius = 4;
+        CGRect frame = CGRectMake(self.controlPoint.x, self.controlPoint.y, 2*cpRadius, 2*cpRadius);
+        frame = CGRectOffset(frame, -cpRadius, -cpRadius);
+        UIBezierPath *p = [UIBezierPath bezierPathWithOvalInRect:frame];
+
+        [p fill];
+    }
     { // arrow line
+        [[UIColor blackColor] setFill];
         UIBezierPath *p = [UIBezierPath new];
         [p moveToPoint:start];
-        [p addQuadCurveToPoint:end controlPoint:cp];
-        p.lineWidth = 4;
-        [p stroke];
+        [p addQuadCurveToPoint:e1 controlPoint:self.controlPoint];
+        [p addLineToPoint:e2];
+        [p addQuadCurveToPoint:start controlPoint:self.controlPoint];
+        [p fill];
     }
     { // arrow tip
+        [[UIColor blackColor] setFill];
         const CGFloat l = 20; // "hat" length
         const CGFloat theta = 20/180.*M_PI; // opening angle
-        CGFloat alpha = tan(cp.y/cp.x); // TODO handle /0
+        CGFloat alpha = tan(self.controlPoint.y/self.controlPoint.x); // TODO handle /0
         CGPoint a1 = CGPointMake(l * cos(alpha - theta), l * sin(alpha - theta));
         CGPoint a2 = CGPointMake(l * cos(alpha + theta), l * sin(alpha + theta));
         UIBezierPath *p = [UIBezierPath new];
-        p.lineWidth = 4;
         [p moveToPoint:start];
         [p addLineToPoint:a1];
         [p addLineToPoint:a2];
