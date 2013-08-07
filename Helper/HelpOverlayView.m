@@ -109,7 +109,7 @@
     { // arrow tip
         [[UIColor blackColor] setFill];
         const CGFloat theta = 20/180.*M_PI; // opening angle
-        
+
         CGPoint a1 = [self pointAtRadius:hatLength angle:(alpha - theta)];
         CGPoint a2 = [self pointAtRadius:hatLength angle:(alpha + theta)];
 

@@ -383,6 +383,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Helper/Helper-Prefix.pch";
 				INFOPLIST_FILE = "Helper/Helper-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -396,6 +397,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Helper/Helper-Prefix.pch";
 				INFOPLIST_FILE = "Helper/Helper-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -460,6 +462,7 @@
 				2639AD3D17B2955200ED86A5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2639AD3E17B2955200ED86A5 /* Build configuration list for PBXNativeTarget "HelperTests" */ = {
 			isa = XCConfigurationList;
@@ -468,6 +471,7 @@
 				2639AD4017B2955200ED86A5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
