@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 
+#import "HelpOverlayView.h"
+
 @interface ViewController ()
 
 @end
@@ -17,7 +19,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+
+    HelpOverlayView *v = [[HelpOverlayView alloc] initWithFrame:CGRectMake(40, 40, 200, 350)];
+    UITextView *t = [UITextView new];
+    t.text = @"This is a longish text description of what's happening in this box.\n\n"
+    "Throwing in a line break as well to get some more text in the box. See if this helps.";
+    t.backgroundColor = [UIColor clearColor];
+    t.font = [UIFont systemFontOfSize:14];
+    v.descriptionView = t;
+    [self.view addSubview:v];
 }
 
 - (void)didReceiveMemoryWarning

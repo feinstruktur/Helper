@@ -21,6 +21,7 @@
 		2639AD2E17B2955200ED86A5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2639AD1017B2955200ED86A5 /* UIKit.framework */; };
 		2639AD3617B2955200ED86A5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2639AD3417B2955200ED86A5 /* InfoPlist.strings */; };
 		2639AD3817B2955200ED86A5 /* HelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2639AD3717B2955200ED86A5 /* HelperTests.m */; };
+		2639AD4317B295CE00ED86A5 /* HelpOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2639AD4217B295CE00ED86A5 /* HelpOverlayView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,8 @@
 		2639AD3317B2955200ED86A5 /* HelperTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelperTests-Info.plist"; sourceTree = "<group>"; };
 		2639AD3517B2955200ED86A5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2639AD3717B2955200ED86A5 /* HelperTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelperTests.m; sourceTree = "<group>"; };
+		2639AD4117B295CE00ED86A5 /* HelpOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpOverlayView.h; sourceTree = "<group>"; };
+		2639AD4217B295CE00ED86A5 /* HelpOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpOverlayView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +122,8 @@
 				2639AD2217B2955200ED86A5 /* ViewController.m */,
 				2639AD2417B2955200ED86A5 /* Images.xcassets */,
 				2639AD1317B2955200ED86A5 /* Supporting Files */,
+				2639AD4117B295CE00ED86A5 /* HelpOverlayView.h */,
+				2639AD4217B295CE00ED86A5 /* HelpOverlayView.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -251,6 +256,7 @@
 			files = (
 				2639AD2317B2955200ED86A5 /* ViewController.m in Sources */,
 				2639AD1D17B2955200ED86A5 /* AppDelegate.m in Sources */,
+				2639AD4317B295CE00ED86A5 /* HelpOverlayView.m in Sources */,
 				2639AD1917B2955200ED86A5 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
