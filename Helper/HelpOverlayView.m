@@ -9,9 +9,17 @@
 #import "HelpOverlayView.h"
 
 
+const CGFloat TipLength = 20;
+const CGFloat TipTheta = 20/180.*M_PI; // tip opening angle
+const CGFloat BaseTheta = 5/180.*M_PI; // base opening angle
+const CGFloat BaseInset = 8;
+
+
 @interface HelpOverlayView ()
 
+@property (nonatomic, assign) CGPoint arrowTip;
 @property (nonatomic, assign) CGPoint controlPoint;
+@property (nonatomic, assign) BOOL arrowTipTouched;
 @property (nonatomic, assign) BOOL controlPointTouched;
 
 @end
@@ -32,6 +40,7 @@
             CGFloat w = CGRectGetWidth(self.arrowFrame);
             self.controlPoint = CGPointMake(self.arrowTip.x + w - cpInset, self.arrowTip.y + cpInset);
         }
+        self.arrowTip = self.arrowFrame.origin;
     }
     return self;
 }
@@ -62,12 +71,6 @@
 }
 
 
-- (CGPoint)arrowTip
-{
-    return self.arrowFrame.origin;
-}
-
-
 - (CGRect)controlArea
 {
     return [self squareAroundPoint:self.controlPoint size:8];
@@ -84,53 +87,84 @@
 
 - (CGPoint)pointAtRadius:(CGFloat)r angle:(CGFloat)phi
 {
-    return CGPointMake(r * cos(phi), r * sin(phi));
+    return [self pointAtRadius:r angle:phi origin:CGPointZero];
+}
+
+
+- (CGPoint)pointAtRadius:(CGFloat)r angle:(CGFloat)phi origin:(CGPoint)origin
+{
+    return CGPointMake(origin.x + r * cos(phi), origin.y + r * sin(phi));
+}
+
+
+- (CGFloat)alpha
+{
+    return atan(self.controlPoint.y/self.controlPoint.x);
+}
+
+
+- (CGPoint)a1
+{
+    return [self pointAtRadius:TipLength angle:(self.alpha - TipTheta) origin:self.arrowTip];
+}
+
+
+- (CGPoint)a2
+{
+    return [self pointAtRadius:TipLength angle:(self.alpha + TipTheta) origin:self.arrowTip];
+}
+
+
+- (CGPoint)s1
+{
+    return [self pointAtRadius:0.95*TipLength angle:(self.alpha - BaseTheta) origin:self.arrowTip];
+}
+
+
+- (CGPoint)s2
+{
+    return [self pointAtRadius:0.95*TipLength angle:(self.alpha + BaseTheta) origin:self.arrowTip];
+}
+
+
+- (CGPoint)e1
+{
+    CGFloat w = CGRectGetWidth(self.arrowFrame);
+    CGFloat h = CGRectGetHeight(self.arrowFrame);
+    return CGPointMake(w + BaseInset, h);
+}
+
+
+- (CGPoint)e2
+{
+    CGFloat w = CGRectGetWidth(self.arrowFrame);
+    CGFloat h = CGRectGetHeight(self.arrowFrame);
+    return CGPointMake(w, h + BaseInset);
 }
 
 
 - (void)drawRect:(CGRect)rect
 {
-    const CGFloat baseInset = 8;
-    const CGFloat hatLength = 20;
-
-    CGFloat alpha = atan(self.controlPoint.y/self.controlPoint.x);
-
-    CGPoint tip = self.arrowTip;
-
-    { // control point
-        [[UIColor grayColor] setFill];
-        UIBezierPath *p = [UIBezierPath bezierPathWithOvalInRect:self.controlArea];
-        [p fill];
-    }
     { // arrow line
         [self.mainColor setFill];
-        const CGFloat theta = 5/180.*M_PI; // opening angle
-        CGFloat w = CGRectGetWidth(self.arrowFrame);
-        CGFloat h = CGRectGetHeight(self.arrowFrame);
-
-        CGPoint s1 = [self pointAtRadius:0.95*hatLength angle:(alpha - theta)];
-        CGPoint s2 = [self pointAtRadius:0.95*hatLength angle:(alpha + theta)];
-        CGPoint e1 = CGPointMake(tip.x + w + baseInset, tip.y + h);
-        CGPoint e2 = CGPointMake(tip.x + w, tip.y + h + baseInset);
-
         UIBezierPath *p = [UIBezierPath new];
-        [p moveToPoint:s1];
-        [p addQuadCurveToPoint:e1 controlPoint:self.controlPoint];
-        [p addLineToPoint:e2];
-        [p addQuadCurveToPoint:s2 controlPoint:self.controlPoint];
+        [p moveToPoint:self.s1];
+        [p addQuadCurveToPoint:self.e1 controlPoint:self.controlPoint];
+        [p addLineToPoint:self.e2];
+        [p addQuadCurveToPoint:self.s2 controlPoint:self.controlPoint];
         [p fill];
     }
     { // arrow tip
         [self.mainColor setFill];
-        const CGFloat theta = 20/180.*M_PI; // opening angle
-
-        CGPoint a1 = [self pointAtRadius:hatLength angle:(alpha - theta)];
-        CGPoint a2 = [self pointAtRadius:hatLength angle:(alpha + theta)];
-
         UIBezierPath *p = [UIBezierPath new];
-        [p moveToPoint:tip];
-        [p addLineToPoint:a1];
-        [p addLineToPoint:a2];
+        [p moveToPoint:self.arrowTip];
+        [p addLineToPoint:self.a1];
+        [p addLineToPoint:self.a2];
+        [p fill];
+    }
+    { // control point
+        [[UIColor grayColor] setFill];
+        UIBezierPath *p = [UIBezierPath bezierPathWithOvalInRect:self.controlArea];
         [p fill];
     }
 }
@@ -141,12 +175,14 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    const CGFloat touchRadius = 44;
     UITouch *touch = [touches anyObject];
     CGPoint hit = [touch locationInView:self];
-    CGRect hitArea = [self squareAroundPoint:self.controlPoint size:44];
-    if (CGRectContainsPoint(hitArea, hit)) {
+
+    if (CGRectContainsPoint([self squareAroundPoint:self.controlPoint size:touchRadius], hit)) {
         self.controlPointTouched = YES;
-        return;
+    } else if (CGRectContainsPoint([self squareAroundPoint:self.arrowTip size:touchRadius], hit)) {
+        self.arrowTipTouched = YES;
     }
 }
 
@@ -160,6 +196,8 @@
     CGFloat dy = current.y - last.y;
     if (self.controlPointTouched) {
         self.controlPoint = CGPointMake(self.controlPoint.x + dx, self.controlPoint.y + dy);
+    } else if (self.arrowTipTouched) {
+        self.arrowTip =CGPointMake(self.arrowTip.x + dx, self.arrowTip.y + dy);
     } else {
         self.frame = CGRectOffset(self.frame, dx, dy);
     }
@@ -170,12 +208,14 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     self.controlPointTouched = NO;
+    self.arrowTipTouched = NO;
 }
 
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     self.controlPointTouched = NO;
+    self.arrowTipTouched = NO;
 }
 
 
