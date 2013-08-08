@@ -99,7 +99,7 @@ const CGFloat BaseInset = 8;
 
 - (CGFloat)alpha
 {
-    return atan(self.controlPoint.y/self.controlPoint.x);
+    return atan((self.arrowTip.y - self.controlPoint.y)/(self.arrowTip.x - self.controlPoint.x));
 }
 
 
