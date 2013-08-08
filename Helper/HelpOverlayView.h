@@ -12,5 +12,6 @@
 
 @property (nonatomic, assign) CGRect arrowFrame;
 @property (nonatomic) UIView *descriptionView;
+@property (nonatomic) UIColor *mainColor;
 
 @end

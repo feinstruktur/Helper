@@ -23,7 +23,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor yellowColor];
+        self.backgroundColor = [UIColor clearColor];
         self.arrowFrame = CGRectMake(0, 0,
                                      0.3*CGRectGetWidth(self.frame),
                                      0.3*CGRectGetHeight(self.frame));
@@ -92,7 +92,7 @@
         [p fill];
     }
     { // arrow line
-        [[UIColor blackColor] setFill];
+        [self.mainColor setFill];
         const CGFloat theta = 5/180.*M_PI; // opening angle
         CGFloat w = CGRectGetWidth(self.arrowFrame);
         CGFloat h = CGRectGetHeight(self.arrowFrame);
@@ -110,7 +110,7 @@
         [p fill];
     }
     { // arrow tip
-        [[UIColor blackColor] setFill];
+        [self.mainColor setFill];
         const CGFloat theta = 20/180.*M_PI; // opening angle
 
         CGPoint a1 = [self pointAtRadius:hatLength angle:(alpha - theta)];
