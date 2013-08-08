@@ -175,7 +175,7 @@ const CGFloat BaseInset = 8;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    const CGFloat touchRadius = 44;
+    const CGFloat touchRadius = 60;
     UITouch *touch = [touches anyObject];
     CGPoint hit = [touch locationInView:self];
 

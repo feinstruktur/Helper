@@ -22,7 +22,7 @@
 
     UIColor *mainColor = [UIColor whiteColor];
     
-    HelpOverlayView *v = [[HelpOverlayView alloc] initWithFrame:CGRectMake(40, 40, 200, 300)];
+    HelpOverlayView *v = [[HelpOverlayView alloc] initWithFrame:CGRectMake(40, 40, 250, 350)];
     v.mainColor = mainColor;
     UITextView *t = [UITextView new];
     t.text = @"This is a longish text description of what's happening in this box.\n\n"
