@@ -46,7 +46,18 @@
         self.descriptionView.frame = CGRectMake(x, y,
                                                 CGRectGetWidth(self.frame) - x,
                                                 CGRectGetHeight(self.frame) - y);
-        [self addSubview:self.descriptionView];
+        { // set up shadow to improve readability
+            UIColor *shadowColor =  [UIColor colorWithWhite:0.2 alpha:0.5];
+            shadowColor = [UIColor blackColor];
+            self.descriptionView.clipsToBounds = NO;
+            self.descriptionView.layer.masksToBounds = YES;
+            self.descriptionView.layer.cornerRadius = 8;
+            self.descriptionView.layer.shadowColor = shadowColor.CGColor;
+            self.descriptionView.layer.shadowOffset = CGSizeMake(3, 5);
+            self.descriptionView.layer.shadowRadius = 4;
+            self.descriptionView.layer.shadowOpacity = 1;
+        }
+       [self addSubview:self.descriptionView];
     }
 }
 
