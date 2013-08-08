@@ -35,12 +35,12 @@ const CGFloat BaseInset = 8;
         self.arrowFrame = CGRectMake(0, 0,
                                      0.3*CGRectGetWidth(self.frame),
                                      0.3*CGRectGetHeight(self.frame));
+        self.arrowTip = CGPointMake(self.arrowFrame.origin.x + 20, self.arrowFrame.origin.y + 20);
         { // set control point
             const CGFloat cpInset = 20;
             CGFloat w = CGRectGetWidth(self.arrowFrame);
             self.controlPoint = CGPointMake(self.arrowTip.x + w - cpInset, self.arrowTip.y + cpInset);
         }
-        self.arrowTip = self.arrowFrame.origin;
     }
     return self;
 }
@@ -175,7 +175,7 @@ const CGFloat BaseInset = 8;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    const CGFloat touchRadius = 60;
+    const CGFloat touchRadius = 44;
     UITouch *touch = [touches anyObject];
     CGPoint hit = [touch locationInView:self];
 
