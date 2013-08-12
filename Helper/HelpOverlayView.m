@@ -12,15 +12,16 @@
 const CGFloat TipLength = 20;
 const CGFloat TipTheta = 20/180.*M_PI; // tip opening angle
 const CGFloat BaseTheta = 5/180.*M_PI; // base opening angle
-const CGFloat BaseInset = 8;
 
 
 @interface HelpOverlayView ()
 
 @property (nonatomic, assign) CGPoint arrowTip;
 @property (nonatomic, assign) CGPoint controlPoint;
+@property (nonatomic, assign) CGPoint endPoint;
 @property (nonatomic, assign) BOOL arrowTipTouched;
 @property (nonatomic, assign) BOOL controlPointTouched;
+@property (nonatomic, assign) BOOL endPointTouched;
 
 @end
 
@@ -41,6 +42,7 @@ const CGFloat BaseInset = 8;
             CGFloat w = CGRectGetWidth(self.arrowFrame);
             self.controlPoint = CGPointMake(self.arrowTip.x + w - cpInset, self.arrowTip.y + cpInset);
         }
+        self.endPoint = CGPointMake(self.arrowFrame.origin.x + self.arrowFrame.size.width, self.arrowFrame.origin.y + self.arrowFrame.size.height);
     }
     return self;
 }
@@ -99,13 +101,29 @@ const CGFloat BaseInset = 8;
 
 - (CGFloat)alpha
 {
-    CGFloat dx = self.controlPoint.x - self.arrowTip.x;
-    CGFloat dy = self.controlPoint.y - self.arrowTip.y;
+    return angle(self.arrowTip, self.controlPoint);
+}
+
+
+- (CGFloat)beta
+{
+    return angle(self.controlPoint, self.endPoint);
+}
+
+
+CGFloat angle(CGPoint p1, CGPoint p2) {
+    CGFloat dx = p2.x - p1.x;
+    CGFloat dy = p2.y - p1.y;
     if (dx >= 0) {
         return atan(dy/dx);
     } else {
         return M_PI + atan(dy/dx);
     }
+}
+
+
+CGFloat distance(CGPoint p1, CGPoint p2) {
+    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }
 
 
@@ -135,17 +153,17 @@ const CGFloat BaseInset = 8;
 
 - (CGPoint)e1
 {
-    CGFloat w = CGRectGetWidth(self.arrowFrame);
-    CGFloat h = CGRectGetHeight(self.arrowFrame);
-    return CGPointMake(w + BaseInset, h);
+    CGFloat beta = [self beta] - BaseTheta;
+    CGFloat dist = distance(self.controlPoint, self.endPoint);
+    return [self pointAtRadius:dist angle:beta origin:self.controlPoint];
 }
 
 
 - (CGPoint)e2
 {
-    CGFloat w = CGRectGetWidth(self.arrowFrame);
-    CGFloat h = CGRectGetHeight(self.arrowFrame);
-    return CGPointMake(w, h + BaseInset);
+    CGFloat beta = [self beta] + BaseTheta;
+    CGFloat dist = distance(self.controlPoint, self.endPoint);
+    return [self pointAtRadius:dist angle:beta origin:self.controlPoint];
 }
 
 
@@ -189,6 +207,8 @@ const CGFloat BaseInset = 8;
         self.controlPointTouched = YES;
     } else if (CGRectContainsPoint([self squareAroundPoint:self.arrowTip size:touchRadius], hit)) {
         self.arrowTipTouched = YES;
+    } else if (CGRectContainsPoint([self squareAroundPoint:self.endPoint size:touchRadius], hit)) {
+        self.endPointTouched = YES;
     }
 }
 
@@ -203,7 +223,9 @@ const CGFloat BaseInset = 8;
     if (self.controlPointTouched) {
         self.controlPoint = CGPointMake(self.controlPoint.x + dx, self.controlPoint.y + dy);
     } else if (self.arrowTipTouched) {
-        self.arrowTip =CGPointMake(self.arrowTip.x + dx, self.arrowTip.y + dy);
+        self.arrowTip = CGPointMake(self.arrowTip.x + dx, self.arrowTip.y + dy);
+    } else if (self.endPointTouched) {
+        self.endPoint = CGPointMake(self.endPoint.x + dx, self.endPoint.y + dy);
     } else {
         self.frame = CGRectOffset(self.frame, dx, dy);
     }
@@ -215,6 +237,7 @@ const CGFloat BaseInset = 8;
 {
     self.controlPointTouched = NO;
     self.arrowTipTouched = NO;
+    self.endPointTouched = NO;
 }
 
 
@@ -222,6 +245,7 @@ const CGFloat BaseInset = 8;
 {
     self.controlPointTouched = NO;
     self.arrowTipTouched = NO;
+    self.endPointTouched = NO;
 }
 
 
